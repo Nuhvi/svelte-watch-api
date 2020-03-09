@@ -1,18 +1,20 @@
-var createError = require('http-errors');
-var express = require('express');
+const createError = require('http-errors');
+const express = require('express');
 
-var app = express();
+const app = express();
 
 // Routing
-app.get('/', (req, res) => res.json('Hello Svelte!'));
+const getData = require('./src/lib');
+
+app.get('/', (req, res) => res.json(getData()));
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use((err, req, res) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
