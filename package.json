@@ -1,0 +1,14 @@
+{
+  "name": "svelte-watch-api",
+  "version": "1.0.0",
+  "description": "API for svelte-watch libraries stats with nodejs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ar nazeh",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
