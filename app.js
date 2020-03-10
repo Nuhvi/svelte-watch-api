@@ -7,7 +7,7 @@ const app = express();
 const lib = require('./src/lib');
 
 app.get('/', (req, res) => res.json(lib.getStats()));
-app.get('/update', (req, res) => res.json(lib.updateStats()));
+app.get('/update', async (req, res) => res.json(await lib.updateStats()));
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
