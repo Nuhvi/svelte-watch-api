@@ -13,5 +13,7 @@ module.exports = {
     ecmaVersion: 2018,
   },
   ignorePatterns: ['bin/', 'node_modules/'],
-  rules: {},
+  rules: {
+    'implicit-arrow-linebreak': 0,
+  },
 };

@@ -1,15 +1,17 @@
-const db = require('../data');
-const manulaData = require('../data/manualData.json');
+const db = require('../database');
+const api = require('../api');
 
 const date = (str) => (str ? new Date(str) : new Date());
 
-const updateStats = () => {
-  const { updatedAt, data } = manulaData;
-  let res = data;
+const updateStats = async () => {
+  const { updatedAt, data } = db.getStats();
 
-  if (date(updatedAt) < date()) {
-    res = db.updateStats();
-  }
+  // if (date(updatedAt) < date()) return res;
+  const fetchedData = await api.fetchAll(data);
+  const res = db.setStats({
+    updatedAt: new Date(),
+    data: fetchedData,
+  });
 
   return res;
 };
