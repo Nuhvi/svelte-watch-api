@@ -1,11 +1,12 @@
-const fs = require('fs');
-const path = require('path');
+import fs = require('fs');
+import path = require('path');
 
 const manualDataPath = path.join(__dirname, 'manualData.json');
 const statsPath = path.join(__dirname, 'stats.json');
 
-const getManualData = () => JSON.parse(fs.readFileSync(manualDataPath));
-const getStats = () => JSON.parse(fs.readFileSync(statsPath));
+const getManualData = () =>
+  JSON.parse(fs.readFileSync(manualDataPath, 'utf-8'));
+const getStats = () => JSON.parse(fs.readFileSync(statsPath, 'utf-8'));
 
 const setStats = (newStats = {}) => {
   try {
@@ -18,7 +19,7 @@ const setStats = (newStats = {}) => {
   }
 };
 
-module.exports = {
+export = {
   getManualData,
   getStats,
   setStats,

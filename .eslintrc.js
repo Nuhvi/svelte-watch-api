@@ -1,19 +1,11 @@
 module.exports = {
-  env: {
-    commonjs: true,
-    es6: true,
-    node: true,
-  },
-  extends: ['airbnb-base'],
-  globals: {
-    Atomics: 'readonly',
-    SharedArrayBuffer: 'readonly',
-  },
-  parserOptions: {
-    ecmaVersion: 2018,
-  },
-  ignorePatterns: ['bin/', 'node_modules/'],
-  rules: {
-    'implicit-arrow-linebreak': 0,
-  },
+  root: true,
+  parser: '@typescript-eslint/parser',
+  plugins: ['@typescript-eslint'],
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/eslint-recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:node/recommended',
+  ],
 };

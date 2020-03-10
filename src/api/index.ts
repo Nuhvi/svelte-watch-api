@@ -1,6 +1,6 @@
-const getRecentDownloadsData = require('./npm');
+import getRecentDownloadsData = require('./npm');
 
-const fetchLibraryStats = async (library) => {
+const fetchLibraryStats = async (library): Promise<{}> => {
   const recentDownloadsData = await getRecentDownloadsData(library.url);
   return {
     ...library,
@@ -17,6 +17,7 @@ const fetchAll = async (libraries = []) => {
   const res = await Promise.all(promises);
   return res;
 };
-module.exports = {
+
+export = {
   fetchAll,
 };

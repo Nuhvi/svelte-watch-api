@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-const app = require('../app');
+const app = require('../public/app');
 const debug = require('debug')('svelte-watch-api:server');
 const http = require('http');
 

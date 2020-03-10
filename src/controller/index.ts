@@ -1,5 +1,5 @@
-const db = require('../database');
-const api = require('../api');
+import db = require('../database');
+import api = require('../api');
 
 const date = (str) => (str ? new Date(str) : new Date());
 
@@ -16,7 +16,7 @@ const updateStats = async () => {
   return res;
 };
 
-module.exports = {
+export = {
   updateStats,
   getStats: db.getStats,
 };

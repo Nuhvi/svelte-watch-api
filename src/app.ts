@@ -1,11 +1,10 @@
-const createError = require('http-errors');
-const express = require('express');
+import createError = require('http-errors');
+import express = require('express');
+import lib = require('./controller');
 
 const app = express();
 
 // Routing
-const lib = require('./src/lib');
-
 app.get('/', (req, res) => res.json(lib.getStats()));
 app.get('/update', async (req, res) => res.json(await lib.updateStats()));
 
