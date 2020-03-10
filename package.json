@@ -1,11 +1,12 @@
 {
   "name": "svelte-watch-api",
   "version": "0.0.0",
+  "author": "Nazeh",
   "description": "API for svelte-watch libraries stats with NodeJs",
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "nodemon ./bin/www localhost 8080"
+    "dev": "nodemon ./bin/www"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -20,5 +21,8 @@
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.20.1",
     "nodemon": "^2.0.2"
+  },
+  "engines": {
+    "node": "13.x"
   }
 }

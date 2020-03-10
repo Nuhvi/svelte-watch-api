@@ -4,9 +4,10 @@ const express = require('express');
 const app = express();
 
 // Routing
-const getData = require('./src/lib');
+const lib = require('./src/lib');
 
-app.get('/', (req, res) => res.json(getData()));
+app.get('/', (req, res) => res.json(lib.getStats()));
+app.get('/update', (req, res) => res.json(lib.updateStats()));
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

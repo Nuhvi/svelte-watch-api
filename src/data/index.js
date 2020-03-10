@@ -2,14 +2,15 @@ const fs = require('fs');
 const path = require('path');
 const stats = require('./stats');
 
-const joinPath = (str) => path.join(__dirname, str);
+const statsPath = path.join(__dirname, 'stats.json');
 
-const update = () => {
-  const filePath = joinPath('stats.json');
+const getStats = () => JSON.parse(fs.readFileSync(statsPath));
+
+const updateStats = () => {
   try {
-    const jsonData = JSON.parse(fs.readFileSync(filePath));
+    const jsonData = getStats();
     const newData = { ...jsonData, updatedAt: new Date() };
-    fs.writeFileSync(filePath, JSON.stringify(newData));
+    fs.writeFileSync(statsPath, JSON.stringify(newData));
     return newData;
   } catch (error) {
     return error;
@@ -18,5 +19,6 @@ const update = () => {
 
 module.exports = {
   ...stats,
-  update,
+  getStats,
+  updateStats,
 };
