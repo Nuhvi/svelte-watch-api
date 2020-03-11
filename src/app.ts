@@ -1,9 +1,20 @@
 import createError = require('http-errors');
 import express = require('express');
 import lib = require('./controller');
+import cors = require('cors');
+
+require('dotenv').config();
 
 const app = express();
-require('dotenv').config();
+
+// use cors
+app.use(
+  cors({
+    origin: `${
+      app.get('env') === 'development' ? '*' : process.env.FRONT_END_URL
+    }`,
+  }),
+);
 
 // Routing
 app.get('/', (req, res) => res.json(lib.getStats()));
