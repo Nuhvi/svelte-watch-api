@@ -60,80 +60,83 @@ var isRecentThan = function (date, days) {
     return new Date(date).getTime() > new Date().getTime() - days * 86400000;
 };
 var getRepoData = function (url) { return __awaiter(void 0, void 0, void 0, function () {
-    var target, res, json, watchers, description, error_1;
+    var target, res, json, watchers, description;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 target = reposPath(url) + GH_CLIENT_AUTH();
-                _a.label = 1;
-            case 1:
-                _a.trys.push([1, 4, , 5]);
                 return [4 /*yield*/, fetch(target)];
-            case 2:
+            case 1:
                 res = _a.sent();
+                if (res.status === 404)
+                    return [2 /*return*/, {}];
                 return [4 /*yield*/, res.json()];
-            case 3:
+            case 2:
                 json = _a.sent();
                 watchers = json.watchers, description = json.description;
                 return [2 /*return*/, {
                         stars: watchers,
                         description: description
                     }];
-            case 4:
-                error_1 = _a.sent();
-                return [2 /*return*/, {
-                        stars: 0,
-                        description: ''
-                    }];
-            case 5: return [2 /*return*/];
         }
     });
 }); };
 var getRecentReleaseData = function (url) { return __awaiter(void 0, void 0, void 0, function () {
-    var target, res, json, error_2;
+    var target, res, json;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 target = reposPath(url) + '/releases/latest' + GH_CLIENT_AUTH();
-                _a.label = 1;
-            case 1:
-                _a.trys.push([1, 4, , 5]);
                 return [4 /*yield*/, fetch(target)];
-            case 2:
+            case 1:
                 res = _a.sent();
+                if (res.status === 404)
+                    return [2 /*return*/, {}];
                 return [4 /*yield*/, res.json()];
-            case 3:
+            case 2:
                 json = _a.sent();
                 return [2 /*return*/, {
                         version: json.name,
                         lastestReleaseDate: json.published_at,
                         hasRecentRelease: isRecentThan(json.published_at, 360)
                     }];
-            case 4:
-                error_2 = _a.sent();
-                return [2 /*return*/, {
-                        version: '',
-                        lastestReleaseDate: '',
-                        hasRecentRelease: false
-                    }];
-            case 5: return [2 /*return*/];
+        }
+    });
+}); };
+var decode64 = function (raw) { return Buffer.from(raw, 'base64').toString(); };
+var getPackageJSONData = function (url) { return __awaiter(void 0, void 0, void 0, function () {
+    var target, res, json, packageJSONData, description, version;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                target = reposPath(url) + '/contents/package.json' + GH_CLIENT_AUTH();
+                return [4 /*yield*/, fetch(target)];
+            case 1:
+                res = _a.sent();
+                if (res.status === 404)
+                    return [2 /*return*/, {}];
+                return [4 /*yield*/, res.json()];
+            case 2:
+                json = _a.sent();
+                packageJSONData = JSON.parse(decode64(json.content));
+                description = packageJSONData.description, version = packageJSONData.version;
+                return [2 /*return*/, { description: description, version: version }];
         }
     });
 }); };
 var getContributorsData = function (url) { return __awaiter(void 0, void 0, void 0, function () {
-    var target, res, json, contributorsCount, error_3;
+    var target, res, json, contributorsCount;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 target = reposPath(url) + '/contributors' + GH_CLIENT_AUTH();
-                _a.label = 1;
-            case 1:
-                _a.trys.push([1, 4, , 5]);
                 return [4 /*yield*/, fetch(target)];
-            case 2:
+            case 1:
                 res = _a.sent();
+                if (res.status === 404)
+                    return [2 /*return*/, {}];
                 return [4 /*yield*/, res.json()];
-            case 3:
+            case 2:
                 json = _a.sent();
                 contributorsCount = json.length;
                 return [2 /*return*/, {
@@ -141,31 +144,20 @@ var getContributorsData = function (url) { return __awaiter(void 0, void 0, void
                         hasMultipleContributers: contributorsCount > 1,
                         hasManyContributers: contributorsCount > 7
                     }];
-            case 4:
-                error_3 = _a.sent();
-                return [2 /*return*/, {
-                        contributorsCount: 0,
-                        hasMultipleContributers: false,
-                        hasManyContributers: false
-                    }];
-            case 5: return [2 /*return*/];
         }
     });
 }); };
 var getCommitsData = function (url) { return __awaiter(void 0, void 0, void 0, function () {
-    var target, res, json, commits, recentCommitsCount, error_4;
+    var target, res, json, commits, recentCommitsCount;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 target = reposPath(url) + '/commits' + GH_CLIENT_AUTH();
-                _a.label = 1;
-            case 1:
-                _a.trys.push([1, 4, , 5]);
                 return [4 /*yield*/, fetch(target)];
-            case 2:
+            case 1:
                 res = _a.sent();
                 return [4 /*yield*/, res.json()];
-            case 3:
+            case 2:
                 json = _a.sent();
                 commits = json;
                 recentCommitsCount = commits.filter(function (item) {
@@ -175,37 +167,34 @@ var getCommitsData = function (url) { return __awaiter(void 0, void 0, void 0, f
                         recentCommitsCount: recentCommitsCount,
                         hasRecentCommits: recentCommitsCount > 5
                     }];
-            case 4:
-                error_4 = _a.sent();
-                return [2 /*return*/, { recentCommitsCount: 0, hasRecentCommits: false }];
-            case 5: return [2 /*return*/];
         }
     });
 }); };
 module.exports = function (url) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, _b, _c, _d, error_5;
-    return __generator(this, function (_e) {
-        switch (_e.label) {
+    var _a, _b, _c, _d, _e, error_1;
+    return __generator(this, function (_f) {
+        switch (_f.label) {
             case 0:
-                _e.trys.push([0, 5, , 6]);
+                _f.trys.push([0, 6, , 7]);
                 _a = [{}];
-                return [4 /*yield*/, getRepoData(url)];
+                return [4 /*yield*/, getPackageJSONData(url)];
             case 1:
-                _b = [__assign.apply(void 0, _a.concat([(_e.sent())]))];
-                return [4 /*yield*/, getRecentReleaseData(url)];
+                _b = [__assign.apply(void 0, _a.concat([(_f.sent())]))];
+                return [4 /*yield*/, getRepoData(url)];
             case 2:
-                _c = [__assign.apply(void 0, _b.concat([(_e.sent())]))];
-                return [4 /*yield*/, getContributorsData(url)];
+                _c = [__assign.apply(void 0, _b.concat([(_f.sent())]))];
+                return [4 /*yield*/, getRecentReleaseData(url)];
             case 3:
-                _d = [__assign.apply(void 0, _c.concat([(_e.sent())]))];
+                _d = [__assign.apply(void 0, _c.concat([(_f.sent())]))];
+                return [4 /*yield*/, getContributorsData(url)];
+            case 4:
+                _e = [__assign.apply(void 0, _d.concat([(_f.sent())]))];
                 return [4 /*yield*/, getCommitsData(url)];
-            case 4: return [2 /*return*/, __assign.apply(void 0, _d.concat([(_e.sent())]))];
-            case 5:
-                error_5 = _e.sent();
-                // eslint-disable-next-line no-console
-                console.debug(error_5);
+            case 5: return [2 /*return*/, __assign.apply(void 0, _e.concat([(_f.sent())]))];
+            case 6:
+                error_1 = _f.sent();
                 return [2 /*return*/, {}];
-            case 6: return [2 /*return*/];
+            case 7: return [2 /*return*/];
         }
     });
 }); };

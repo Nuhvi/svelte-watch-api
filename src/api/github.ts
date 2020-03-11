@@ -16,82 +16,90 @@ const isRecentThan = (date: string, days: number): boolean =>
 
 const getRepoData = async (
   url: string,
-): Promise<{
-  stars: number;
-  description: string;
-}> => {
+): Promise<
+  | {
+      stars: number;
+      description: string;
+    }
+  | {}
+> => {
   const target = reposPath(url) + GH_CLIENT_AUTH();
 
-  try {
-    const res = await fetch(target);
-    const json = await res.json();
-    const { watchers, description } = json;
+  const res = await fetch(target);
+  if (res.status === 404) return {};
+  const json = await res.json();
+  const { watchers, description } = json;
 
-    return {
-      stars: watchers,
-      description,
-    };
-  } catch (error) {
-    return {
-      stars: 0,
-      description: '',
-    };
-  }
+  return {
+    stars: watchers,
+    description,
+  };
 };
 
 const getRecentReleaseData = async (
   url: string,
-): Promise<{
-  version: string;
-  lastestReleaseDate: string;
-  hasRecentRelease: boolean;
-}> => {
+): Promise<
+  | {
+      version: string;
+      lastestReleaseDate: string;
+      hasRecentRelease: boolean;
+    }
+  | {}
+> => {
   const target = reposPath(url) + '/releases/latest' + GH_CLIENT_AUTH();
 
-  try {
-    const res = await fetch(target);
-    const json = await res.json();
+  const res = await fetch(target);
+  if (res.status === 404) return {};
+  const json = await res.json();
 
-    return {
-      version: json.name,
-      lastestReleaseDate: json.published_at,
-      hasRecentRelease: isRecentThan(json.published_at, 360),
-    };
-  } catch (error) {
-    return {
-      version: '',
-      lastestReleaseDate: '',
-      hasRecentRelease: false,
-    };
-  }
+  return {
+    version: json.name,
+    lastestReleaseDate: json.published_at,
+    hasRecentRelease: isRecentThan(json.published_at, 360),
+  };
+};
+
+const decode64 = (raw: string): string => Buffer.from(raw, 'base64').toString();
+
+const getPackageJSONData = async (
+  url: string,
+): Promise<{
+  description?: string;
+  version?: string;
+}> => {
+  const target = reposPath(url) + '/contents/package.json' + GH_CLIENT_AUTH();
+
+  const res = await fetch(target);
+  if (res.status === 404) return {};
+  const json = await res.json();
+  const packageJSONData = JSON.parse(decode64(json.content));
+  const { description, version } = packageJSONData;
+
+  return { description, version };
 };
 
 const getContributorsData = async (
   url: string,
-): Promise<{
-  contributorsCount: number;
-  hasMultipleContributers: boolean;
-  hasManyContributers: boolean;
-}> => {
+): Promise<
+  | {
+      contributorsCount: number;
+      hasMultipleContributers: boolean;
+      hasManyContributers: boolean;
+    }
+  | {}
+> => {
   const target = reposPath(url) + '/contributors' + GH_CLIENT_AUTH();
 
-  try {
-    const res = await fetch(target);
-    const json = await res.json();
-    const contributorsCount = json.length;
+  const res = await fetch(target);
+  if (res.status === 404) return {};
+  const json = await res.json();
+  const contributorsCount = json.length;
 
-    return {
-      contributorsCount,
-      hasMultipleContributers: contributorsCount > 1,
-      hasManyContributers: contributorsCount > 7,
-    };
-  } catch (error) {
-    return {
-      contributorsCount: 0,
-      hasMultipleContributers: false,
-      hasManyContributers: false,
-    };
-  }
+  return {
+    contributorsCount,
+    hasMultipleContributers: contributorsCount > 1,
+    hasManyContributers: contributorsCount > 7,
+  };
 };
 
 const getCommitsData = async (
@@ -102,35 +110,30 @@ const getCommitsData = async (
 }> => {
   const target = reposPath(url) + '/commits' + GH_CLIENT_AUTH();
 
-  try {
-    const res = await fetch(target);
-    const json = await res.json();
-    const commits = json;
+  const res = await fetch(target);
+  const json = await res.json();
+  const commits = json;
 
-    const recentCommitsCount = commits.filter((item) =>
-      isRecentThan(item.commit.author.date, 90),
-    ).length;
+  const recentCommitsCount = commits.filter((item) =>
+    isRecentThan(item.commit.author.date, 90),
+  ).length;
 
-    return {
-      recentCommitsCount,
-      hasRecentCommits: recentCommitsCount > 5,
-    };
-  } catch (error) {
-    return { recentCommitsCount: 0, hasRecentCommits: false };
-  }
+  return {
+    recentCommitsCount,
+    hasRecentCommits: recentCommitsCount > 5,
+  };
 };
 
-export = async (url: string): Promise<Library> => {
+export = async (url: string): Promise<GithubData> => {
   try {
     return {
+      ...(await getPackageJSONData(url)),
       ...(await getRepoData(url)),
       ...(await getRecentReleaseData(url)),
       ...(await getContributorsData(url)),
       ...(await getCommitsData(url)),
     };
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.debug(error);
     return {};
   }
 };

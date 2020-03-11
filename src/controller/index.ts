@@ -6,7 +6,7 @@ const { isRecentThan } = dateHelpers;
 const updateStats = async (): Promise<Stats> => {
   const readStats = db.getStats();
 
-  if (isRecentThan(readStats.updatedAt, 7)) return readStats;
+  // if (isRecentThan(readStats.updatedAt, 7)) return readStats;
 
   const readData = await api.fetchAll(readStats.data);
 

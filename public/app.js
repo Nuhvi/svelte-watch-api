@@ -39,8 +39,13 @@ exports.__esModule = true;
 var createError = require("http-errors");
 var express = require("express");
 var lib = require("./controller");
-var app = express();
+var cors = require("cors");
 require('dotenv').config();
+var app = express();
+// use cors
+app.use(cors({
+    origin: "" + (app.get('env') === 'development' ? '*' : process.env.FRONT_END_URL)
+}));
 // Routing
 app.get('/', function (req, res) { return res.json(lib.getStats()); });
 app.get('/update', function (req, res) { return __awaiter(void 0, void 0, void 0, function () { var _a, _b; return __generator(this, function (_c) {

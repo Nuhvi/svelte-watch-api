@@ -49,20 +49,18 @@ var getRecentDownloadsData = function (url) { return __awaiter(void 0, void 0, v
                 return [4 /*yield*/, fetch(target)];
             case 1:
                 res = _a.sent();
+                if (res.status === 400)
+                    return [2 /*return*/, {}];
                 return [4 /*yield*/, res.json()];
             case 2:
                 json = _a.sent();
                 downloads = json.downloads;
                 return [2 /*return*/, {
-                        recentDownloadsCount: downloads,
-                        hasRecentDownloads: downloads > 30
+                        recentDownloadsCount: downloads
                     }];
             case 3:
                 error_1 = _a.sent();
-                return [2 /*return*/, {
-                        recentDownloadsCount: 0,
-                        hasRecentDownloads: false
-                    }];
+                return [2 /*return*/, {}];
             case 4: return [2 /*return*/];
         }
     });
