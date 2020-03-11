@@ -39,7 +39,6 @@ var fetch = require("node-fetch");
 var helpers = require("./helpers");
 var parseUrl = helpers.parseUrl;
 var BASE_ENDPOINT = 'https://api.npmjs.org/';
-// Functions
 var getRecentDownloadsData = function (url) { return __awaiter(void 0, void 0, void 0, function () {
     var target, res, json, downloads, error_1;
     return __generator(this, function (_a) {

@@ -40,6 +40,7 @@ var createError = require("http-errors");
 var express = require("express");
 var lib = require("./controller");
 var app = express();
+require('dotenv').config();
 // Routing
 app.get('/', function (req, res) { return res.json(lib.getStats()); });
 app.get('/update', function (req, res) { return __awaiter(void 0, void 0, void 0, function () { var _a, _b; return __generator(this, function (_c) {

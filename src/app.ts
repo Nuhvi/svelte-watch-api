@@ -3,6 +3,7 @@ import express = require('express');
 import lib = require('./controller');
 
 const app = express();
+require('dotenv').config();
 
 // Routing
 app.get('/', (req, res) => res.json(lib.getStats()));

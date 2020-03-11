@@ -4,7 +4,6 @@ const { parseUrl } = helpers;
 
 const BASE_ENDPOINT = 'https://api.npmjs.org/';
 
-// Functions
 const getRecentDownloadsData = async (
   url: string,
 ): Promise<{

@@ -1,10 +1,14 @@
 import getRecentDownloadsData = require('./npm');
+import github = require('./github');
 
 const fetchLibraryStats = async (library): Promise<{}> => {
-  const recentDownloadsData = await getRecentDownloadsData(library.url);
+  const url = library.url;
+  const recentDownloadsData = await getRecentDownloadsData(url);
+  const repoData = await github.getRepoData(url);
   return {
     ...library,
     ...recentDownloadsData,
+    ...repoData,
   };
 };
 

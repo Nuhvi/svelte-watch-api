@@ -1,15 +1,4 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -46,43 +35,51 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var getRecentDownloadsData = require("./npm");
-var github = require("./github");
-var fetchLibraryStats = function (library) { return __awaiter(void 0, void 0, void 0, function () {
-    var url, recentDownloadsData, repoData;
+var fetch = require("node-fetch");
+var helpers = require("./helpers");
+var parseUrl = helpers.parseUrl;
+var BASE_ENDPOINT = 'https://api.github.com/';
+var GH_CLIENT_AUTH = function () {
+    return "?client_id=" + process.env.GH_CLIENT_ID + "&client_secret=" + process.env.GH_CLIENT_SECRET;
+};
+// Helpers
+var fullName = function (url) { return url.split('github.com/')[1]; };
+var reposPath = function (url) { return BASE_ENDPOINT + 'repos/' + fullName(url); };
+var isRecentThan = function (date, days) {
+    return new Date(date).getTime() > new Date().getTime() - days * 86400000;
+};
+var getRepoData = function (url) { return __awaiter(void 0, void 0, void 0, function () {
+    var target, res, json, watchers, description, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                url = library.url;
-                return [4 /*yield*/, getRecentDownloadsData(url)];
+                target = reposPath(url) + GH_CLIENT_AUTH();
+                _a.label = 1;
             case 1:
-                recentDownloadsData = _a.sent();
-                return [4 /*yield*/, github.getRepoData(url)];
+                _a.trys.push([1, 4, , 5]);
+                return [4 /*yield*/, fetch(target)];
             case 2:
-                repoData = _a.sent();
-                return [2 /*return*/, __assign(__assign(__assign({}, library), recentDownloadsData), repoData)];
+                res = _a.sent();
+                return [4 /*yield*/, res.json()];
+            case 3:
+                json = _a.sent();
+                watchers = json.watchers, description = json.description;
+                return [2 /*return*/, {
+                        stars: watchers,
+                        description: description
+                    }];
+            case 4:
+                error_1 = _a.sent();
+                // eslint-disable-next-line no-console
+                console.log("Error: " + error_1 + ", Target: " + target);
+                return [2 /*return*/, {
+                        stars: 0,
+                        description: ''
+                    }];
+            case 5: return [2 /*return*/];
         }
     });
 }); };
-var fetchAll = function (libraries) {
-    if (libraries === void 0) { libraries = []; }
-    return __awaiter(void 0, void 0, void 0, function () {
-        var promises, res;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    promises = [];
-                    libraries.forEach(function (library) {
-                        promises.push(fetchLibraryStats(library));
-                    });
-                    return [4 /*yield*/, Promise.all(promises)];
-                case 1:
-                    res = _a.sent();
-                    return [2 /*return*/, res];
-            }
-        });
-    });
-};
 module.exports = {
-    fetchAll: fetchAll
+    getRepoData: getRepoData
 };
