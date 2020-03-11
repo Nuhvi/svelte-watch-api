@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -36,15 +47,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 var fetch = require("node-fetch");
-var helpers = require("./helpers");
-var parseUrl = helpers.parseUrl;
 var BASE_ENDPOINT = 'https://api.github.com/';
 var GH_CLIENT_AUTH = function () {
     return "?client_id=" + process.env.GH_CLIENT_ID + "&client_secret=" + process.env.GH_CLIENT_SECRET;
 };
 // Helpers
 var fullName = function (url) { return url.split('github.com/')[1]; };
-var reposPath = function (url) { return BASE_ENDPOINT + 'repos/' + fullName(url); };
+var reposPath = function (url) {
+    return BASE_ENDPOINT + 'repos/' + fullName(url);
+};
 var isRecentThan = function (date, days) {
     return new Date(date).getTime() > new Date().getTime() - days * 86400000;
 };
@@ -70,8 +81,6 @@ var getRepoData = function (url) { return __awaiter(void 0, void 0, void 0, func
                     }];
             case 4:
                 error_1 = _a.sent();
-                // eslint-disable-next-line no-console
-                console.log("Error: " + error_1 + ", Target: " + target);
                 return [2 /*return*/, {
                         stars: 0,
                         description: ''
@@ -80,6 +89,123 @@ var getRepoData = function (url) { return __awaiter(void 0, void 0, void 0, func
         }
     });
 }); };
-module.exports = {
-    getRepoData: getRepoData
-};
+var getRecentReleaseData = function (url) { return __awaiter(void 0, void 0, void 0, function () {
+    var target, res, json, error_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                target = reposPath(url) + '/releases/latest' + GH_CLIENT_AUTH();
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 4, , 5]);
+                return [4 /*yield*/, fetch(target)];
+            case 2:
+                res = _a.sent();
+                return [4 /*yield*/, res.json()];
+            case 3:
+                json = _a.sent();
+                return [2 /*return*/, {
+                        version: json.name,
+                        lastestReleaseDate: json.published_at,
+                        hasRecentRelease: isRecentThan(json.published_at, 360)
+                    }];
+            case 4:
+                error_2 = _a.sent();
+                return [2 /*return*/, {
+                        version: '',
+                        lastestReleaseDate: '',
+                        hasRecentRelease: false
+                    }];
+            case 5: return [2 /*return*/];
+        }
+    });
+}); };
+var getContributorsData = function (url) { return __awaiter(void 0, void 0, void 0, function () {
+    var target, res, json, contributorsCount, error_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                target = reposPath(url) + '/contributors' + GH_CLIENT_AUTH();
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 4, , 5]);
+                return [4 /*yield*/, fetch(target)];
+            case 2:
+                res = _a.sent();
+                return [4 /*yield*/, res.json()];
+            case 3:
+                json = _a.sent();
+                contributorsCount = json.length;
+                return [2 /*return*/, {
+                        contributorsCount: contributorsCount,
+                        hasMultipleContributers: contributorsCount > 1,
+                        hasManyContributers: contributorsCount > 7
+                    }];
+            case 4:
+                error_3 = _a.sent();
+                return [2 /*return*/, {
+                        contributorsCount: 0,
+                        hasMultipleContributers: false,
+                        hasManyContributers: false
+                    }];
+            case 5: return [2 /*return*/];
+        }
+    });
+}); };
+var getCommitsData = function (url) { return __awaiter(void 0, void 0, void 0, function () {
+    var target, res, json, commits, recentCommitsCount, error_4;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                target = reposPath(url) + '/commits' + GH_CLIENT_AUTH();
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 4, , 5]);
+                return [4 /*yield*/, fetch(target)];
+            case 2:
+                res = _a.sent();
+                return [4 /*yield*/, res.json()];
+            case 3:
+                json = _a.sent();
+                commits = json;
+                recentCommitsCount = commits.filter(function (item) {
+                    return isRecentThan(item.commit.author.date, 90);
+                }).length;
+                return [2 /*return*/, {
+                        recentCommitsCount: recentCommitsCount,
+                        hasRecentCommits: recentCommitsCount > 5
+                    }];
+            case 4:
+                error_4 = _a.sent();
+                return [2 /*return*/, { recentCommitsCount: 0, hasRecentCommits: false }];
+            case 5: return [2 /*return*/];
+        }
+    });
+}); };
+module.exports = function (url) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, _b, _c, _d, error_5;
+    return __generator(this, function (_e) {
+        switch (_e.label) {
+            case 0:
+                _e.trys.push([0, 5, , 6]);
+                _a = [{}];
+                return [4 /*yield*/, getRepoData(url)];
+            case 1:
+                _b = [__assign.apply(void 0, _a.concat([(_e.sent())]))];
+                return [4 /*yield*/, getRecentReleaseData(url)];
+            case 2:
+                _c = [__assign.apply(void 0, _b.concat([(_e.sent())]))];
+                return [4 /*yield*/, getContributorsData(url)];
+            case 3:
+                _d = [__assign.apply(void 0, _c.concat([(_e.sent())]))];
+                return [4 /*yield*/, getCommitsData(url)];
+            case 4: return [2 /*return*/, __assign.apply(void 0, _d.concat([(_e.sent())]))];
+            case 5:
+                error_5 = _e.sent();
+                // eslint-disable-next-line no-console
+                console.debug(error_5);
+                return [2 /*return*/, {}];
+            case 6: return [2 /*return*/];
+        }
+    });
+}); };

@@ -46,21 +46,21 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var getRecentDownloadsData = require("./npm");
-var github = require("./github");
+var getNPMData = require("./npm");
+var getGithubData = require("./github");
 var fetchLibraryStats = function (library) { return __awaiter(void 0, void 0, void 0, function () {
-    var url, recentDownloadsData, repoData;
+    var url, npmData, githubData;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 url = library.url;
-                return [4 /*yield*/, getRecentDownloadsData(url)];
+                return [4 /*yield*/, getNPMData(url)];
             case 1:
-                recentDownloadsData = _a.sent();
-                return [4 /*yield*/, github.getRepoData(url)];
+                npmData = _a.sent();
+                return [4 /*yield*/, getGithubData(url)];
             case 2:
-                repoData = _a.sent();
-                return [2 /*return*/, __assign(__assign(__assign({}, library), recentDownloadsData), repoData)];
+                githubData = _a.sent();
+                return [2 /*return*/, __assign(__assign(__assign({}, library), npmData), githubData)];
         }
     });
 }); };

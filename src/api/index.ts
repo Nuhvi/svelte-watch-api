@@ -1,18 +1,21 @@
-import getRecentDownloadsData = require('./npm');
-import github = require('./github');
+import getNPMData = require('./npm');
+import getGithubData = require('./github');
 
 const fetchLibraryStats = async (library): Promise<{}> => {
   const url = library.url;
-  const recentDownloadsData = await getRecentDownloadsData(url);
-  const repoData = await github.getRepoData(url);
+  const npmData = await getNPMData(url);
+  const githubData = await getGithubData(url);
+
   return {
     ...library,
-    ...recentDownloadsData,
-    ...repoData,
+    ...npmData,
+    ...githubData,
   };
 };
 
-const fetchAll = async (libraries = []) => {
+const fetchAll = async (
+  libraries = [],
+): Promise<Record<string, string | number | boolean>[]> => {
   const promises = [];
   libraries.forEach((library) => {
     promises.push(fetchLibraryStats(library));
