@@ -36,29 +36,36 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 var fetch = require("node-fetch");
+var helpers = require("./helpers");
+var parseUrl = helpers.parseUrl;
 var BASE_ENDPOINT = 'https://api.npmjs.org/';
-// Helpers
-var pakageName = function (url) {
-    return url.split('github.com/')[1].split('/')[1];
-};
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-var safe = function (fn) { return fn["catch"](function () { return ({}); }); };
+// Functions
 var getRecentDownloadsData = function (url) { return __awaiter(void 0, void 0, void 0, function () {
-    var target, res, json;
+    var target, res, json, downloads, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                target = BASE_ENDPOINT + "downloads/point/last-month/" + pakageName(url);
+                _a.trys.push([0, 3, , 4]);
+                target = BASE_ENDPOINT + 'downloads/point/last-month/' + parseUrl(url).repo;
                 return [4 /*yield*/, fetch(target)];
             case 1:
                 res = _a.sent();
                 return [4 /*yield*/, res.json()];
             case 2:
                 json = _a.sent();
+                downloads = json.downloads;
                 return [2 /*return*/, {
-                        recentDownloadsCount: json.downloads
+                        recentDownloadsCount: downloads,
+                        hasRecentDownloads: downloads > 30
                     }];
+            case 3:
+                error_1 = _a.sent();
+                return [2 /*return*/, {
+                        recentDownloadsCount: 0,
+                        hasRecentDownloads: false
+                    }];
+            case 4: return [2 /*return*/];
         }
     });
 }); };
-module.exports = function (url) { return safe(getRecentDownloadsData(url)); };
+module.exports = getRecentDownloadsData;

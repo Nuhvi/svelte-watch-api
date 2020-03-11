@@ -1,28 +1,34 @@
 import fetch = require('node-fetch');
+import helpers = require('./helpers');
+const { parseUrl } = helpers;
 
 const BASE_ENDPOINT = 'https://api.npmjs.org/';
 
-// Helpers
-
-const pakageName = (url: string): string =>
-  url.split('github.com/')[1].split('/')[1];
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const safe = (fn: Promise<any>) => fn.catch(() => ({}));
-
+// Functions
 const getRecentDownloadsData = async (
-  url,
-): Promise<{ recentDownloadsCount: number }> => {
-  const target = `${BASE_ENDPOINT}downloads/point/last-month/${pakageName(
-    url,
-  )}`;
+  url: string,
+): Promise<{
+  recentDownloadsCount: number;
+  hasRecentDownloads: boolean;
+}> => {
+  try {
+    const target =
+      BASE_ENDPOINT + 'downloads/point/last-month/' + parseUrl(url).repo;
 
-  const res = await fetch(target);
-  const json = await res.json();
+    const res = await fetch(target);
+    const json = await res.json();
+    const downloads = json.downloads;
 
-  return {
-    recentDownloadsCount: json.downloads,
-  };
+    return {
+      recentDownloadsCount: downloads,
+      hasRecentDownloads: downloads > 30,
+    };
+  } catch (error) {
+    return {
+      recentDownloadsCount: 0,
+      hasRecentDownloads: false,
+    };
+  }
 };
 
-export = (url: string) => safe(getRecentDownloadsData(url));
+export = getRecentDownloadsData;
