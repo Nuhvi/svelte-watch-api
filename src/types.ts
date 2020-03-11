@@ -6,7 +6,7 @@ interface Stats {
 type GithubData = GithubDataInterface | {};
 interface GithubDataInterface {
   description?: string;
-  stars?: number;
+  starsCount?: number;
   hasRecentRelease?: boolean;
   contributorsCount?: number;
   hasMultipleContributers?: boolean;
@@ -23,18 +23,19 @@ interface Library {
   url: string;
   tags: string[];
   description: string;
+  starsCount: number;
+  contributorsCount: number;
+  recentCommitsCount: number;
+  recentDownloadsCount: number;
   hasMeaningfulTests: false;
   hasExampleCode: false;
   hasAPIDoc: false;
   hasCISetup: false;
-  recentDownloadsCount: number;
-  topRecentDownloads: boolean;
-  topStarred: boolean;
-  stars: number;
+  hasTopRecentDownloads: boolean;
+  hasTopStars: boolean;
   hasRecentRelease: boolean;
-  contributorsCount: number;
   hasMultipleContributers: boolean;
   hasManyContributers: boolean;
-  recentCommitsCount: number;
   hasRecentCommits: boolean;
+  score: number;
 }

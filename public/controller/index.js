@@ -38,9 +38,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var db = require("../database");
 var api = require("../api");
 var dateHelpers = require("../utils/date");
-var isRecentThan = dateHelpers.isRecentThan;
+var calculateScore = require("../utils/controllerHelper");
+var isRecentThanDaysAgo = dateHelpers.isRecentThanDaysAgo;
 var updateStats = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var readStats, readData, stats;
+    var readStats, readData, data, stats;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -48,9 +49,10 @@ var updateStats = function () { return __awaiter(void 0, void 0, void 0, functio
                 return [4 /*yield*/, api.fetchAll(readStats.data)];
             case 1:
                 readData = _a.sent();
+                data = calculateScore(readData).sort(function (a, b) { return b.score - a.score; });
                 stats = db.setStats({
                     updatedAt: "" + new Date(),
-                    data: readData
+                    data: data
                 });
                 return [2 /*return*/, stats];
         }

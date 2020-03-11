@@ -18,7 +18,7 @@ const getRepoData = async (
   url: string,
 ): Promise<
   | {
-      stars: number;
+      starsCount: number;
       description: string;
     }
   | {}
@@ -31,7 +31,7 @@ const getRepoData = async (
   const { watchers, description } = json;
 
   return {
-    stars: watchers,
+    starsCount: watchers,
     description,
   };
 };

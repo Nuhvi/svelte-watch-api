@@ -75,7 +75,7 @@ var getRepoData = function (url) { return __awaiter(void 0, void 0, void 0, func
                 json = _a.sent();
                 watchers = json.watchers, description = json.description;
                 return [2 /*return*/, {
-                        stars: watchers,
+                        starsCount: watchers,
                         description: description
                     }];
         }
