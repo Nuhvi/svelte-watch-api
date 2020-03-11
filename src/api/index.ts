@@ -1,7 +1,7 @@
 import getNPMData = require('./npm');
 import getGithubData = require('./github');
 
-const fetchLibraryStats = async (library): Promise<{}> => {
+const fetchLibraryStats = async (library): Promise<Library> => {
   const url = library.url;
   const npmData = await getNPMData(url);
   const githubData = await getGithubData(url);
@@ -13,9 +13,7 @@ const fetchLibraryStats = async (library): Promise<{}> => {
   };
 };
 
-const fetchAll = async (
-  libraries = [],
-): Promise<Record<string, string | number | boolean>[]> => {
+const fetchAll = async (libraries = []): Promise<Library[]> => {
   const promises = [];
   libraries.forEach((library) => {
     promises.push(fetchLibraryStats(library));

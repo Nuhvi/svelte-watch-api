@@ -1,19 +1,21 @@
 import db = require('../database');
 import api = require('../api');
+import dateHelpers = require('../utils/date');
+const { isRecentThan } = dateHelpers;
 
-const date = (str) => (str ? new Date(str) : new Date());
+const updateStats = async (): Promise<Stats> => {
+  const readStats = db.getStats();
 
-const updateStats = async () => {
-  const { updatedAt, data } = db.getStats();
+  if (isRecentThan(readStats.updatedAt, 7)) return readStats;
 
-  // if (date(updatedAt) < date()) return res;
-  const fetchedData = await api.fetchAll(data);
-  const res = db.setStats({
-    updatedAt: new Date(),
-    data: fetchedData,
+  const readData = await api.fetchAll(readStats.data);
+
+  const stats = db.setStats({
+    updatedAt: `${new Date()}`,
+    data: readData,
   });
 
-  return res;
+  return stats;
 };
 
 export = {

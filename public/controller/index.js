@@ -37,21 +37,24 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var db = require("../database");
 var api = require("../api");
-var date = function (str) { return (str ? new Date(str) : new Date()); };
+var dateHelpers = require("../utils/date");
+var isRecentThan = dateHelpers.isRecentThan;
 var updateStats = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, updatedAt, data, fetchedData, res;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var readStats, readData, stats;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0:
-                _a = db.getStats(), updatedAt = _a.updatedAt, data = _a.data;
-                return [4 /*yield*/, api.fetchAll(data)];
+                readStats = db.getStats();
+                if (isRecentThan(readStats.updatedAt, 7))
+                    return [2 /*return*/, readStats];
+                return [4 /*yield*/, api.fetchAll(readStats.data)];
             case 1:
-                fetchedData = _b.sent();
-                res = db.setStats({
-                    updatedAt: new Date(),
-                    data: fetchedData
+                readData = _a.sent();
+                stats = db.setStats({
+                    updatedAt: "" + new Date(),
+                    data: readData
                 });
-                return [2 /*return*/, res];
+                return [2 /*return*/, stats];
         }
     });
 }); };

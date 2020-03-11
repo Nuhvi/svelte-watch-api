@@ -12,14 +12,9 @@ var __assign = (this && this.__assign) || function () {
 };
 var fs = require("fs");
 var path = require("path");
-var manualDataPath = path.join(__dirname, 'manualData.json');
 var statsPath = path.join(__dirname, 'stats.json');
-var getManualData = function () {
-    return JSON.parse(fs.readFileSync(manualDataPath, 'utf-8'));
-};
-var getStats = function () { return JSON.parse(fs.readFileSync(statsPath, 'utf-8')); };
+var getStats = function () { return JSON.parse(fs.readFileSync(statsPath, 'UTF-8')); };
 var setStats = function (newStats) {
-    if (newStats === void 0) { newStats = {}; }
     try {
         var stats = getStats();
         var newData = __assign(__assign({}, stats), newStats);
@@ -31,7 +26,6 @@ var setStats = function (newStats) {
     }
 };
 module.exports = {
-    getManualData: getManualData,
     getStats: getStats,
     setStats: setStats
 };

@@ -120,9 +120,7 @@ const getCommitsData = async (
   }
 };
 
-export = async (
-  url: string,
-): Promise<Record<string, string | boolean | number>> => {
+export = async (url: string): Promise<Library> => {
   try {
     return {
       ...(await getRepoData(url)),
