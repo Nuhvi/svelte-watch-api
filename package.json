@@ -6,10 +6,9 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "tsc && nodemon ./bin/www",
+    "dev": "nodemon -e ts  --exec \"npm run start\"",
     "lint": "eslint . --ext .ts",
-    "build": "tsc",
-    "watch": "tsc -w"
+    "build": "tsc"
   },
   "pre-commit": [
     "lint",
