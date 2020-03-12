@@ -12,7 +12,7 @@ var __assign = (this && this.__assign) || function () {
 };
 var fs = require("fs");
 var path = require("path");
-var statsPath = path.join(__dirname, 'stats.json');
+var statsPath = path.join(path.resolve('.'), 'static/data.json');
 var getStats = function () { return JSON.parse(fs.readFileSync(statsPath, 'UTF-8')); };
 var setStats = function (newStats) {
     try {

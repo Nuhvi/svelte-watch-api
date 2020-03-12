@@ -1,7 +1,7 @@
 import fs = require('fs');
 import path = require('path');
 
-const statsPath = path.join(__dirname, 'stats.json');
+const statsPath = path.join(path.resolve('.'), 'static/data.json');
 
 const getStats = (): Stats => JSON.parse(fs.readFileSync(statsPath, 'UTF-8'));
 

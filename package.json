@@ -5,11 +5,16 @@
   "description": "API for svelte-watch libraries stats with NodeJs",
   "private": true,
   "scripts": {
-    "start": "tsc && node ./bin/www",
+    "start": "node ./bin/www",
     "dev": "tsc && nodemon ./bin/www",
     "lint": "eslint . --ext .ts",
+    "build": "tsc",
     "watch": "tsc -w"
   },
+  "pre-commit": [
+    "lint",
+    "build"
+  ],
   "dependencies": {
     "axios": "^0.19.2",
     "cookie-parser": "~1.4.4",
@@ -28,6 +33,7 @@
     "eslint": "5.14",
     "eslint-plugin-node": "^11.0.0",
     "nodemon": "^2.0.2",
+    "pre-commit": "^1.2.2",
     "typescript": "^3.8.3"
   },
   "engines": {
