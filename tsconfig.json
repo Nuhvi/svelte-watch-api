@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "outDir": "public"
+  },
+  "compileOnSave": true,
+  "include": ["src"]
+}
