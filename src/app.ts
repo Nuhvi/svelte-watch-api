@@ -17,8 +17,7 @@ app.use(
 );
 
 // Routing
-app.get('/', (req, res) => res.json(lib.getStats()));
-app.get('/update', async (req, res) => res.json(await lib.updateStats()));
+app.get('/', async (req, res) => res.json(await lib.updateStats()));
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

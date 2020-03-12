@@ -47,8 +47,7 @@ app.use(cors({
     origin: "" + (app.get('env') === 'development' ? '*' : process.env.FRONT_END_URL)
 }));
 // Routing
-app.get('/', function (req, res) { return res.json(lib.getStats()); });
-app.get('/update', function (req, res) { return __awaiter(void 0, void 0, void 0, function () { var _a, _b; return __generator(this, function (_c) {
+app.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () { var _a, _b; return __generator(this, function (_c) {
     switch (_c.label) {
         case 0:
             _b = (_a = res).json;

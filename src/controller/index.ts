@@ -7,7 +7,7 @@ const { isRecentThanDaysAgo } = dateHelpers;
 const updateStats = async (): Promise<Stats> => {
   const readStats = db.getStats();
 
-  // if (isRecentThanDaysAgo(readStats.updatedAt, 7)) return readStats;
+  if (isRecentThanDaysAgo(readStats.updatedAt, 1)) return readStats;
 
   const readData = await api.fetchAll(readStats.data);
   const data = calculateScore(readData).sort((a, b) => b.score - a.score);

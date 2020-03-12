@@ -46,6 +46,8 @@ var updateStats = function () { return __awaiter(void 0, void 0, void 0, functio
         switch (_a.label) {
             case 0:
                 readStats = db.getStats();
+                if (isRecentThanDaysAgo(readStats.updatedAt, 1))
+                    return [2 /*return*/, readStats];
                 return [4 /*yield*/, api.fetchAll(readStats.data)];
             case 1:
                 readData = _a.sent();
