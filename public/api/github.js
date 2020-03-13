@@ -89,7 +89,7 @@ var getRepoData = function (url) { return __awaiter(void 0, void 0, void 0, func
     });
 }); };
 var getRecentReleaseData = function (url) { return __awaiter(void 0, void 0, void 0, function () {
-    var target, res, json, version;
+    var target, res, json;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -102,9 +102,8 @@ var getRecentReleaseData = function (url) { return __awaiter(void 0, void 0, voi
                 return [4 /*yield*/, res.json()];
             case 2:
                 json = _a.sent();
-                version = sanitizeVersion(json.tag_name);
                 return [2 /*return*/, {
-                        version: json.tag_name,
+                        version: sanitizeVersion(json.tag_name),
                         lastestReleaseDate: json.published_at,
                         hasRecentRelease: isRecentThan(json.published_at, 360)
                     }];
@@ -186,13 +185,13 @@ module.exports = function (url) { return __awaiter(void 0, void 0, void 0, funct
             case 0:
                 _f.trys.push([0, 6, , 7]);
                 _a = [{}];
-                return [4 /*yield*/, getPackageJSONData(url)];
+                return [4 /*yield*/, getRecentReleaseData(url)];
             case 1:
                 _b = [__assign.apply(void 0, _a.concat([(_f.sent())]))];
-                return [4 /*yield*/, getRepoData(url)];
+                return [4 /*yield*/, getPackageJSONData(url)];
             case 2:
                 _c = [__assign.apply(void 0, _b.concat([(_f.sent())]))];
-                return [4 /*yield*/, getRecentReleaseData(url)];
+                return [4 /*yield*/, getRepoData(url)];
             case 3:
                 _d = [__assign.apply(void 0, _c.concat([(_f.sent())]))];
                 return [4 /*yield*/, getContributorsData(url)];

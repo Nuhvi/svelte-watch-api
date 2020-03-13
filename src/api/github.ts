@@ -58,10 +58,8 @@ const getRecentReleaseData = async (
   if (res.status === 404) return {};
   const json = await res.json();
 
-  const version = sanitizeVersion(json.tag_name);
-
   return {
-    version: json.tag_name,
+    version: sanitizeVersion(json.tag_name),
     lastestReleaseDate: json.published_at,
     hasRecentRelease: isRecentThan(json.published_at, 360),
   };
@@ -140,9 +138,9 @@ const getCommitsData = async (
 export = async (url: string): Promise<GithubData> => {
   try {
     return {
+      ...(await getRecentReleaseData(url)),
       ...(await getPackageJSONData(url)),
       ...(await getRepoData(url)),
-      ...(await getRecentReleaseData(url)),
       ...(await getContributorsData(url)),
       ...(await getCommitsData(url)),
     };
