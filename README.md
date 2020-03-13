@@ -29,7 +29,7 @@ yarn start
 
 Visit http://localhost:3000/ it should return JSON response with the following shape:
 
-```json
+```js
 {
   updatedAt: string,
   data: Array<
