@@ -67,18 +67,23 @@ var fetchLibraryStats = function (library) { return __awaiter(void 0, void 0, vo
 var fetchAll = function (libraries) {
     if (libraries === void 0) { libraries = []; }
     return __awaiter(void 0, void 0, void 0, function () {
-        var promises, res;
+        var promises_1, res, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    promises = [];
+                    _a.trys.push([0, 2, , 3]);
+                    promises_1 = [];
                     libraries.forEach(function (library) {
-                        promises.push(fetchLibraryStats(library));
+                        promises_1.push(fetchLibraryStats(library));
                     });
-                    return [4 /*yield*/, Promise.all(promises)];
+                    return [4 /*yield*/, Promise.all(promises_1)];
                 case 1:
                     res = _a.sent();
                     return [2 /*return*/, res];
+                case 2:
+                    error_1 = _a.sent();
+                    return [2 /*return*/, []];
+                case 3: return [2 /*return*/];
             }
         });
     });

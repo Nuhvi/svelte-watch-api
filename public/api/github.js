@@ -59,6 +59,13 @@ var reposPath = function (url) {
 var isRecentThan = function (date, days) {
     return new Date(date).getTime() > new Date().getTime() - days * 86400000;
 };
+var sanitizeVersion = function (v) {
+    if (!v)
+        return;
+    var foundVersion = v.match(/\d\.\d\.\d/);
+    if (foundVersion)
+        return 'v' + foundVersion;
+};
 var getRepoData = function (url) { return __awaiter(void 0, void 0, void 0, function () {
     var target, res, json, watchers, description;
     return __generator(this, function (_a) {
@@ -82,7 +89,7 @@ var getRepoData = function (url) { return __awaiter(void 0, void 0, void 0, func
     });
 }); };
 var getRecentReleaseData = function (url) { return __awaiter(void 0, void 0, void 0, function () {
-    var target, res, json;
+    var target, res, json, version;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -95,8 +102,9 @@ var getRecentReleaseData = function (url) { return __awaiter(void 0, void 0, voi
                 return [4 /*yield*/, res.json()];
             case 2:
                 json = _a.sent();
+                version = sanitizeVersion(json.tag_name);
                 return [2 /*return*/, {
-                        version: json.name,
+                        version: json.tag_name,
                         lastestReleaseDate: json.published_at,
                         hasRecentRelease: isRecentThan(json.published_at, 360)
                     }];
@@ -105,7 +113,7 @@ var getRecentReleaseData = function (url) { return __awaiter(void 0, void 0, voi
 }); };
 var decode64 = function (raw) { return Buffer.from(raw, 'base64').toString(); };
 var getPackageJSONData = function (url) { return __awaiter(void 0, void 0, void 0, function () {
-    var target, res, json, packageJSONData, description, version;
+    var target, res, json, packageJSONData, description, version, sanitizedVersion;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -120,7 +128,8 @@ var getPackageJSONData = function (url) { return __awaiter(void 0, void 0, void 
                 json = _a.sent();
                 packageJSONData = JSON.parse(decode64(json.content));
                 description = packageJSONData.description, version = packageJSONData.version;
-                return [2 /*return*/, { description: description, version: version }];
+                sanitizedVersion = sanitizeVersion(version);
+                return [2 /*return*/, __assign({ description: description }, (sanitizedVersion ? { version: sanitizedVersion } : {}))];
         }
     });
 }); };

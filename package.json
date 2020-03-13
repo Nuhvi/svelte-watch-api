@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "nodemon -e ts  --exec \"npm run start\"",
+    "dev": "npm run start &&nodemon -e ts  --exec \"npm run build\"",
     "lint": "eslint . --ext .ts",
     "build": "tsc"
   },
