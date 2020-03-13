@@ -14,6 +14,12 @@ const reposPath = (url: string): string =>
 const isRecentThan = (date: string, days: number): boolean =>
   new Date(date).getTime() > new Date().getTime() - days * 86400000;
 
+const sanitizeVersion = (v: string): string => {
+  if (!v) return;
+  const foundVersion = v.match(/\d\.\d\.\d/);
+  if (foundVersion) return 'v' + foundVersion;
+};
+
 const getRepoData = async (
   url: string,
 ): Promise<
@@ -52,8 +58,10 @@ const getRecentReleaseData = async (
   if (res.status === 404) return {};
   const json = await res.json();
 
+  const version = sanitizeVersion(json.tag_name);
+
   return {
-    version: json.name,
+    version: json.tag_name,
     lastestReleaseDate: json.published_at,
     hasRecentRelease: isRecentThan(json.published_at, 360),
   };
@@ -75,7 +83,12 @@ const getPackageJSONData = async (
   const packageJSONData = JSON.parse(decode64(json.content));
   const { description, version } = packageJSONData;
 
-  return { description, version };
+  const sanitizedVersion = sanitizeVersion(version);
+
+  return {
+    description,
+    ...(sanitizedVersion ? { version: sanitizedVersion } : {}),
+  };
 };
 
 const getContributorsData = async (

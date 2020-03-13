@@ -13,14 +13,18 @@ const fetchLibraryStats = async (library): Promise<Library> => {
   };
 };
 
-const fetchAll = async (libraries = []): Promise<Library[]> => {
-  const promises = [];
-  libraries.forEach((library) => {
-    promises.push(fetchLibraryStats(library));
-  });
+const fetchAll = async (libraries = []): Promise<Library[] | []> => {
+  try {
+    const promises = [];
+    libraries.forEach((library) => {
+      promises.push(fetchLibraryStats(library));
+    });
 
-  const res = await Promise.all(promises);
-  return res;
+    const res = await Promise.all(promises);
+    return res;
+  } catch (error) {
+    return [];
+  }
 };
 
 export = {
